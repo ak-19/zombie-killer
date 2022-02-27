@@ -7,3 +7,4 @@ class Player(pygame.sprite.Sprite):
     def update(self): pass
     def move(self): pass
     def check_collission(self): pass
+    def check_animations(self): pass
