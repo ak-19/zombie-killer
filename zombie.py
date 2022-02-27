@@ -1,6 +1,6 @@
 import pygame
 
-class Player(pygame.sprite.Sprite):
+class Zombie(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
@@ -9,8 +9,5 @@ class Player(pygame.sprite.Sprite):
     def check_collission(self): pass
     def check_animations(self): pass
 
-    def jump(self): pass
-    def shoot(self): pass
-    def reset(self): pass
     def animate(self): pass
 
