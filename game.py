@@ -2,10 +2,12 @@ import pygame
 from background import Background
 
 from colors import Colors
+from portal import Portal
 from rubymaker import RubyMaker
 from screen import Screen
 from tile import Tile
 from tilemap import TileMap
+from text import Text
 
 class Game:
     def __init__(self, display) -> None:
@@ -36,7 +38,21 @@ class Game:
                     Tile(j*32, i*32, tile_id, self.main_tile_group, self.platform_group)
                 elif tile_id == 6:
                     RubyMaker(j*32, i*32, self.main_tile_group)
+                elif tile_id == 7:
+                    Portal(j*32, i*32, 'green', self.portal_group)                    
+                elif tile_id == 8:
+                    Portal(j*32, i*32, 'purple', self.portal_group)                                        
+        
+        self.text = Text(display)
 
+        self.setup_stats()
+
+    def setup_stats(self):
+        self.STARTING_ROUND_TIME = 30
+        self.score = 0
+        self.round_number = 0
+        self.round_time = self.STARTING_ROUND_TIME
+        self.frame_count = 0
 
     def run_game_loop(self):
         while True:
@@ -55,9 +71,19 @@ class Game:
     def draw(self): 
         self.background.draw()
         self.main_tile_group.draw(self.display)
+        self.portal_group.draw(self.display)
+
+        self.text.draw(self.score, self.round_number, self.round_time)
 
     def update(self): 
-        self.main_tile_group.update()  
+        self.frame_count += 1
+        if self.frame_count % 60 == 0:
+            self.round_time -= 1
+            self.frame_count = 0
+
+        self.main_tile_group.update() 
+        self.portal_group.update() 
+
     def add_zombie(self): pass    
     def check_collissions(self): pass    
     def check_round_completion(self): pass    
