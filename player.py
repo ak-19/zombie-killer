@@ -2,6 +2,8 @@ import pygame
 
 vector = pygame.math.Vector2
 
+from screen import Screen
+
 class Player(pygame.sprite.Sprite):
     def populate_sprite_list(self, what, flip):
         sprite_list = []
@@ -29,7 +31,7 @@ class Player(pygame.sprite.Sprite):
     def setup_constants(self):
         self.HORIZONTAL_ACCELERATION = 2
         self.HORIZONTAL_FRICTION = .15
-        self.VERTICAL_ACCELERATION = .8
+        self.VERTICAL_ACCELERATION = 0# .8
         self.VERTICAL_JUMP_SPEED = 18
         self.STARTING_HEALTH = 100
 
@@ -67,8 +69,36 @@ class Player(pygame.sprite.Sprite):
 
         self.health = self.STARTING_HEALTH
 
-    def update(self): pass
-    def move(self): pass
+    def update(self):
+        self.move()
+        self.check_collission()
+        self.check_animations()
+
+    def move(self):
+        self.acceleration = vector(0, self.VERTICAL_ACCELERATION)
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT]:
+            self.acceleration.x = -self.HORIZONTAL_ACCELERATION
+        elif keys[pygame.K_RIGHT]:
+            self.acceleration.x = self.HORIZONTAL_ACCELERATION            
+        
+        self.acceleration.x -= self.velocity.x * self.HORIZONTAL_FRICTION 
+
+        self.velocity += self.acceleration
+
+        self.position += self.velocity + .5*self.acceleration
+
+        if self.position.x < 0:
+            self.position.x = Screen.WIDTH
+
+        elif self.position.x > Screen.WIDTH:
+            self.position.x = 0           
+
+        self.rect.bottomleft = self.position
+
+
     def check_collission(self): pass
     def check_animations(self): pass
 

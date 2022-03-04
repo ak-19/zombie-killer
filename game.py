@@ -44,7 +44,7 @@ class Game:
                 elif tile_id == 8:
                     Portal(j*32, i*32, 'purple', self.portal_group)  
                 elif tile_id == 9:                                                          
-                    self.player = Player(j*32, i*32 + 32, self.platform_group, self.portal_group, self.bullet_group)
+                    self.player = Player(j*32 - 32, i*32 + 32, self.platform_group, self.portal_group, self.bullet_group)
                     self.player_group.add(self.player)
         
         self.text = Text(display)
