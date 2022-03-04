@@ -90,6 +90,7 @@ class Game:
 
         self.main_tile_group.update() 
         self.portal_group.update() 
+        self.player_group.update()
 
     def add_zombie(self): pass    
     def check_collissions(self): pass    
