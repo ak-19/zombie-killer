@@ -2,6 +2,7 @@ import pygame
 from background import Background
 
 from colors import Colors
+from player import Player
 from portal import Portal
 from rubymaker import RubyMaker
 from screen import Screen
@@ -41,9 +42,13 @@ class Game:
                 elif tile_id == 7:
                     Portal(j*32, i*32, 'green', self.portal_group)                    
                 elif tile_id == 8:
-                    Portal(j*32, i*32, 'purple', self.portal_group)                                        
+                    Portal(j*32, i*32, 'purple', self.portal_group)  
+                elif tile_id == 9:                                                          
+                    self.player = Player(j*32, i*32 + 32, self.platform_group, self.portal_group, self.bullet_group)
+                    self.player_group.add(self.player)
         
         self.text = Text(display)
+
 
         self.setup_stats()
 
@@ -72,6 +77,8 @@ class Game:
         self.background.draw()
         self.main_tile_group.draw(self.display)
         self.portal_group.draw(self.display)
+
+        self.player_group.draw(self.display)
 
         self.text.draw(self.score, self.round_number, self.round_time)
 
