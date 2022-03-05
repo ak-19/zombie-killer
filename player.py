@@ -31,7 +31,7 @@ class Player(pygame.sprite.Sprite):
     def setup_constants(self):
         self.HORIZONTAL_ACCELERATION = 2
         self.HORIZONTAL_FRICTION = .15
-        self.VERTICAL_ACCELERATION = 0# .8
+        self.VERTICAL_ACCELERATION = .8
         self.VERTICAL_JUMP_SPEED = 18
         self.STARTING_HEALTH = 100
 
@@ -63,9 +63,7 @@ class Player(pygame.sprite.Sprite):
         self.set_sounds()
 
         self.start_position = (x, y)
-        self.position = vector(x, y)
-        self.velocity = vector(0, 0)
-        self.acceleration = vector(0, self.VERTICAL_ACCELERATION)
+        self.reset()
 
         self.health = self.STARTING_HEALTH
 
@@ -82,7 +80,8 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_LEFT]:
             self.acceleration.x = -self.HORIZONTAL_ACCELERATION
         elif keys[pygame.K_RIGHT]:
-            self.acceleration.x = self.HORIZONTAL_ACCELERATION            
+            self.acceleration.x = self.HORIZONTAL_ACCELERATION
+        
         
         self.acceleration.x -= self.velocity.x * self.HORIZONTAL_FRICTION 
 
@@ -99,13 +98,54 @@ class Player(pygame.sprite.Sprite):
         self.rect.bottomleft = self.position
 
 
-    def check_collission(self): pass
+    def check_collission(self):
+        if self.velocity.y > 0:
+            collided_platforms = pygame.sprite.spritecollide(self, self.platform_group, False)
+            if collided_platforms:
+                self.position.y = collided_platforms[0].rect.top + 1
+                self.velocity.y = 0
+            
+
+        if self.velocity.y < 0:
+            collided_platforms = pygame.sprite.spritecollide(self, self.platform_group, False)
+            if collided_platforms:
+                self.velocity.y = 0
+                while pygame.sprite.spritecollide(self, self.platform_group, False):
+                    self.position.y += 1
+                    self.rect.bottomleft = self.position
+
+
+        if pygame.sprite.spritecollide(self, self.portal_group, False):
+            if self.position.x > Screen.WIDTH // 2:
+                self.position.x = 86
+            else:
+                self.position.x = Screen.WIDTH - 150
+
+            if self.position.y > Screen.HEIGHT // 2:                
+                self.position.y = 64
+            else:
+                self.position.y = Screen.HEIGHT - 132
+
+
     def check_animations(self): pass
 
     def jump(self): 
-        self.jump_sound.play()
+        if pygame.sprite.spritecollide(self, self.platform_group, False):
+            self.jump_sound.play()
+            self.velocity.y = -self.VERTICAL_JUMP_SPEED
+
+
 
     def shoot(self): pass
-    def reset(self): pass
-    def animate(self): pass
+
+    def reset(self):
+        self.position = vector(self.start_position[0], self.start_position[1])
+        self.velocity = vector(0, 0)
+        self.acceleration = vector(0, self.VERTICAL_ACCELERATION)
+
+    def animate(self, sprites, speed):
+        self.sprite_index += speed
+        if self.sprite_index >= len(sprites):
+            self.sprite_index = 0
+        self.image = sprites[int(self.sprite_index)]
 
