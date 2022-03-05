@@ -132,12 +132,19 @@ class Player(pygame.sprite.Sprite):
                 self.position.y = Screen.HEIGHT - 132
 
 
-    def check_animations(self): pass
+    def check_animations(self):
+        if self.animate_jump:
+            if self.velocity.x > 0:
+                self.animate(self.jump_right_sprites, .1)
+            else:
+                self.animate(self.jump_left_sprites, .1)
+
 
     def jump(self): 
         if pygame.sprite.spritecollide(self, self.platform_group, False):
             self.jump_sound.play()
             self.velocity.y = -self.VERTICAL_JUMP_SPEED
+            self.animate_jump = True
 
 
 
@@ -154,5 +161,6 @@ class Player(pygame.sprite.Sprite):
         self.sprite_index += speed
         if self.sprite_index >= len(sprites):
             self.sprite_index = 0
+            self.animate_jump = False
         self.image = sprites[int(self.sprite_index)]
 
