@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
     def populate_sprite_list(self, what, flip):
         sprite_list = []
         for i in range(1, 11):
-            image = pygame.transform.scale(pygame.image.load(f'assets/images/player/{what}/{what.capitalize()} ({1}).png') ,(64, 64))
+            image = pygame.transform.scale(pygame.image.load(f'assets/images/player/{what}/{what.capitalize()} ({i}).png') ,(64, 64))
             if flip:
                 image = pygame.transform.flip(image, True, False)
             sprite_list.append(image)
@@ -52,9 +52,7 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.idle_right_sprites[self.sprite_index]
         self.rect = self.image.get_rect()
-
-        self.rect.bottomleft = (x, y)
-
+        
         self.platform_group, self.portal_group, self.bullet_group = platform_group, portal_group, bullet_group
 
         self.animate_jump = False
@@ -79,8 +77,15 @@ class Player(pygame.sprite.Sprite):
 
         if keys[pygame.K_LEFT]:
             self.acceleration.x = -self.HORIZONTAL_ACCELERATION
+            self.animate(self.move_left_sprites, .5)
         elif keys[pygame.K_RIGHT]:
             self.acceleration.x = self.HORIZONTAL_ACCELERATION
+            self.animate(self.move_right_sprites, .5)
+        else:
+            if self.velocity.x > 0:
+                self.animate(self.idle_right_sprites, .5)
+            else:
+                self.animate(self.idle_left_sprites, .5)
         
         
         self.acceleration.x -= self.velocity.x * self.HORIZONTAL_FRICTION 
@@ -136,12 +141,14 @@ class Player(pygame.sprite.Sprite):
 
 
 
-    def shoot(self): pass
+    def shoot(self): 
+        pass
 
     def reset(self):
         self.position = vector(self.start_position[0], self.start_position[1])
         self.velocity = vector(0, 0)
         self.acceleration = vector(0, self.VERTICAL_ACCELERATION)
+        self.rect.bottomleft = self.position 
 
     def animate(self, sprites, speed):
         self.sprite_index += speed
