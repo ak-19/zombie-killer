@@ -65,6 +65,9 @@ class Game:
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): return
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.player.jump()
+
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                    self.player.shoot()                    
             
             self.update()
 
@@ -81,6 +84,7 @@ class Game:
         self.portal_group.draw(self.display)
 
         self.player_group.draw(self.display)
+        self.bullet_group.draw(self.display)
 
         self.text.draw(self.score, self.round_number, self.round_time)
 
@@ -93,6 +97,7 @@ class Game:
         self.main_tile_group.update() 
         self.portal_group.update() 
         self.player_group.update()
+        self.bullet_group.update()
 
     def add_zombie(self): pass    
     def check_collissions(self): pass    

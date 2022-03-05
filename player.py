@@ -1,4 +1,5 @@
 import pygame
+from bullet import Bullet
 
 vector = pygame.math.Vector2
 
@@ -139,6 +140,12 @@ class Player(pygame.sprite.Sprite):
             else:
                 self.animate(self.jump_left_sprites, .1)
 
+        if self.animate_fire:
+            if self.velocity.x > 0:
+                self.animate(self.attack_right_sprites, .25)
+            else:
+                self.animate(self.attack_left_sprites, .25)                
+
 
     def jump(self): 
         if pygame.sprite.spritecollide(self, self.platform_group, False):
@@ -149,7 +156,11 @@ class Player(pygame.sprite.Sprite):
 
 
     def shoot(self): 
-        pass
+        self.slash_sound.play()
+        x, y = self.rect.center
+        Bullet(x, y, self.bullet_group, self)
+        self.animate_fire = True
+        
 
     def reset(self):
         self.position = vector(self.start_position[0], self.start_position[1])
@@ -162,5 +173,6 @@ class Player(pygame.sprite.Sprite):
         if self.sprite_index >= len(sprites):
             self.sprite_index = 0
             self.animate_jump = False
+            self.animate_fire = False
         self.image = sprites[int(self.sprite_index)]
 
