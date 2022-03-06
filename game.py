@@ -98,14 +98,29 @@ class Game:
             self.round_time -= 1
             self.frame_count = 0
 
+        self.check_collissions()
+
         self.main_tile_group.update() 
         self.portal_group.update() 
         self.player_group.update()
         self.bullet_group.update()
         self.zombie_group.update()
 
-    def add_zombie(self): pass    
-    def check_collissions(self): pass    
+    def add_zombie(self): pass
+
+    def check_collissions(self):
+        collisions = pygame.sprite.groupcollide(self.bullet_group, self.zombie_group, True, False)
+
+        if collisions:
+            for zombies in collisions.values():
+                for zombie in zombies:
+                    zombie.hit_sound.play()
+                    zombie.animate_death = zombie.is_dead = True
+
+
+
+
+
     def check_round_completion(self): pass    
     def check_game_over(self): pass    
     def start_new_round(self): pass    

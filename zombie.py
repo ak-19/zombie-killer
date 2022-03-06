@@ -68,10 +68,7 @@ class Zombie(pygame.sprite.Sprite):
         self.check_animations()
 
     def move(self): 
-        if self.is_dead: 
-            if self.direction < 0: self.animate(self.die_left_sprite, .5)
-            else: self.animate(self.die_right_sprite, .5)
-            return
+        if self.is_dead: return
 
         if self.direction < 0: self.animate(self.walk_left_sprite, .5)
         else: self.animate(self.walk_right_sprite, .5)
@@ -102,11 +99,17 @@ class Zombie(pygame.sprite.Sprite):
                 self.position.y = Screen.HEIGHT - 132
 
     def check_animations(self): 
-        pass
+        if self.animate_death:
+            if self.direction < 0: self.animate(self.die_left_sprite, .5)
+            else: self.animate(self.die_right_sprite, .5)
 
     def animate(self, sprites, speed):
         self.sprite_index += speed
         if self.sprite_index >= len(sprites):
             self.sprite_index = 0
+            if self.animate_death:
+                self.animate_death = False
+                self.sprite_index = len(sprites) - 1
+
         self.image = sprites[int(self.sprite_index)]
 
