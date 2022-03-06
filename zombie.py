@@ -10,7 +10,7 @@ class Zombie(pygame.sprite.Sprite):
         sprites = []
 
         for i in range(1, 11):
-            image = pygame.transform.scale(pygame.image.load(f'assets/images/zombie/{gender}/{state}/{state.capitalize()} ({i}).png'), (32, 32))
+            image = pygame.transform.scale(pygame.image.load(f'assets/images/zombie/{gender}/{state}/{state.capitalize()} ({i}).png'), (64, 64))
             if flip: image = pygame.transform.flip(image, True, False)
             sprites.append(image)
 
@@ -60,11 +60,39 @@ class Zombie(pygame.sprite.Sprite):
         self.round_time = 0
         self.frame_count = 0
 
+    def update(self): 
+        self.move()
+        self.check_collissions()
+        self.check_animations()
 
-    def update(self): pass
-    def move(self): pass
-    def check_collission(self): pass
-    def check_animations(self): pass
+    def move(self): 
+        self.velocity += self.acceleration
+        self.position += self.velocity + .5*self.acceleration
 
-    def animate(self): pass
+        if self.position.x < 0: self.position.x = Screen.WIDTH
+        elif self.position.x > Screen.WIDTH: self.position.x = 0           
+
+        self.rect.bottomleft = self.position
+
+    def check_collissions(self): 
+        collided_platforms = pygame.sprite.spritecollide(self, self.platform_group, False)
+        if collided_platforms:
+            self.position.y = collided_platforms[0].rect.top + 1
+            self.velocity.y = 0
+            
+        if pygame.sprite.spritecollide(self, self.portal_group, False):
+            if self.position.x > Screen.WIDTH // 2:
+                self.position.x = 86
+            else:
+                self.position.x = Screen.WIDTH - 150
+
+            if self.position.y > Screen.HEIGHT // 2:                
+                self.position.y = 64
+            else:
+                self.position.y = Screen.HEIGHT - 132
+
+    def check_animations(self): 
+        pass
+    def animate(self): 
+        pass
 
