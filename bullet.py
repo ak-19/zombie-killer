@@ -15,7 +15,7 @@ class Bullet(pygame.sprite.Sprite):
             
         self.rect = self.image.get_rect()
 
-        self.rect.bottomleft = (x, y)
+        self.rect.center = (x, y)
 
         bullet_group.add(self)
 
