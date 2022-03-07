@@ -55,13 +55,15 @@ class Game:
 
     def setup_stats(self):
         self.STARTING_ROUND_TIME = 30
+        self.STARTING_ZOMBIE_CREATION_TIME = 5
         self.score = 0
         self.round_number = 0
         self.round_time = self.STARTING_ROUND_TIME
         self.frame_count = 0
+        self.zombie_createion_time = self.STARTING_ZOMBIE_CREATION_TIME
 
     def run_game_loop(self):
-        while True:
+        while self.run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): return
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -71,7 +73,7 @@ class Game:
                     self.player.shoot()  
 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                    self.rain_zombies()                                        
+                    self.create_zombie()                                        
             
             self.update()
 
@@ -90,7 +92,7 @@ class Game:
         self.player_group.draw(self.display)
         self.bullet_group.draw(self.display)
         self.zombie_group.draw(self.display)
-        self.text.draw(self.score, self.round_number, self.round_time)
+        self.text.draw(self.score, self.round_number, self.round_time, self.player.health)
 
     def update(self): 
         self.frame_count += 1
@@ -106,7 +108,13 @@ class Game:
         self.bullet_group.update()
         self.zombie_group.update()
 
-    def add_zombie(self): pass
+        self.add_zombies()
+
+    def add_zombies(self):
+        if self.frame_count % 60 == 0:
+            if self.round_time % self.zombie_createion_time == 0:
+                 self.create_zombie()
+
 
     def check_collissions(self):
         collisions = pygame.sprite.groupcollide(self.bullet_group, self.zombie_group, True, False)
@@ -118,6 +126,19 @@ class Game:
                     zombie.animate_death = zombie.is_dead = True
 
 
+        player_zombie_collisions = pygame.sprite.spritecollide(self.player, self.zombie_group, False)
+
+        if player_zombie_collisions:
+            for zombie in player_zombie_collisions:
+                if zombie.is_dead:
+                    zombie.kick_sound.play()
+                    zombie.kill()
+                    self.score += 25
+                else:                    
+                    self.player.health -= 20
+                    self.player.hit_sound.play()
+                    self.player.position.x -= 256 * zombie.direction
+                    self.player.rect.bottomleft = self.player.position
 
 
 
@@ -128,5 +149,5 @@ class Game:
     def pause_game(self): pass    
     def reset_game(self): pass    
 
-    def rain_zombies(self):
-        self.zombie_group.add(Zombie(self.platform_group, self.portal_group, 1, 5))
+    def create_zombie(self):
+        self.zombie_group.add(Zombie(self.platform_group, self.portal_group, self.round_number + 1, self.round_number + 5))

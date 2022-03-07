@@ -64,8 +64,6 @@ class Player(pygame.sprite.Sprite):
         self.start_position = (x, y)
         self.reset()
 
-        self.health = self.STARTING_HEALTH
-
     def update(self):
         self.move()
         self.check_collission()
@@ -163,6 +161,7 @@ class Player(pygame.sprite.Sprite):
         
 
     def reset(self):
+        self.health = self.STARTING_HEALTH
         self.position = vector(self.start_position[0], self.start_position[1])
         self.velocity = vector(0, 0)
         self.acceleration = vector(0, self.VERTICAL_ACCELERATION)

@@ -8,13 +8,13 @@ class Text:
         self.bottom_bar_font = pygame.font.Font('assets/fonts/Pixel.ttf', 24)
         self.display = display
 
-    def draw(self, score, round_number, round_time):
+    def draw(self, score, round_number, round_time, player_health):
         score_text = self.bottom_bar_font.render(f'Score: {score}', True, Colors.WHITE)
         score_text_rect = score_text.get_rect()
         score_text_rect.topleft = (10, Screen.HEIGHT - 50)
         self.display.blit(score_text, score_text_rect)
 
-        health_text = self.bottom_bar_font.render(f'Health: {100}', True, Colors.WHITE)
+        health_text = self.bottom_bar_font.render(f'Health: {player_health}', True, Colors.WHITE)
         health_text_rect = health_text.get_rect()
         health_text_rect.topleft = (10, Screen.HEIGHT - 25)
         self.display.blit(health_text, health_text_rect) 

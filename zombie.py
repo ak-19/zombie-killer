@@ -66,12 +66,20 @@ class Zombie(pygame.sprite.Sprite):
         self.move()
         self.check_collissions()
         self.check_animations()
+        if self.is_dead:
+            self.frame_count += 1
+            if self.frame_count % 60 == 0:
+                self.round_time += 1
+                if self.round_time == self.RISE_TIME:
+                    self.animate_rise = True
+                    self.sprite_index = 0
+
 
     def move(self): 
         if self.is_dead: return
 
-        if self.direction < 0: self.animate(self.walk_left_sprite, .5)
-        else: self.animate(self.walk_right_sprite, .5)
+        if self.direction < 0: self.animate(self.walk_left_sprite, .095)
+        else: self.animate(self.walk_right_sprite, .095)
 
         self.velocity += self.acceleration
         self.position += self.velocity + .5*self.acceleration
@@ -100,8 +108,15 @@ class Zombie(pygame.sprite.Sprite):
 
     def check_animations(self): 
         if self.animate_death:
-            if self.direction < 0: self.animate(self.die_left_sprite, .5)
-            else: self.animate(self.die_right_sprite, .5)
+            if self.direction < 0: self.animate(self.die_left_sprite, .095)
+            else: self.animate(self.die_right_sprite, .095)
+
+        if self.animate_rise:
+            if self.direction < 0: self.animate(self.rise_right_sprite, .095)
+            else: self.animate(self.rise_right_sprite, .095)            
+
+
+
 
     def animate(self, sprites, speed):
         self.sprite_index += speed
@@ -110,6 +125,10 @@ class Zombie(pygame.sprite.Sprite):
             if self.animate_death:
                 self.animate_death = False
                 self.sprite_index = len(sprites) - 1
+            
+            if self.animate_rise:
+                self.animate_rise = self.is_dead = False
+                self.frame_count = self.round_time = 0
 
         self.image = sprites[int(self.sprite_index)]
 
