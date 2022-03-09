@@ -122,6 +122,8 @@ class Game:
 
         self.check_round_completion()
 
+        self.check_game_over()
+
     def add_zombies(self):
         if self.frame_count % 60 == 0:
             if self.round_time % self.zombie_createion_time == 0:
@@ -192,7 +194,7 @@ class Game:
         while pause:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): 
-                    self.run  = pause = False
+                    self.run = pause = False
                     return
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     pause = False
@@ -205,10 +207,23 @@ class Game:
         pygame.mixer.music.unpause()
 
 
-    def check_game_over(self): pass    
+    def check_game_over(self):
+        if self.player.health <= 0:
+            self.pause_game(f'Game over. Final score: {self.score}', "Press 'Enter' to play again")    
+            self.reset_game()
 
 
-    def reset_game(self): pass    
+    def reset_game(self):
+        self.score = 0    
+        self.round_number = 1
+        self.round_time = self.STARTING_ROUND_TIME
+        self.zombie_createion_time = self.STARTING_ZOMBIE_CREATION_TIME
+        self.player.health = self.player.STARTING_HEALTH
+        self.player.reset()
+
+        self.zombie_group.empty()
+        self.rubie_group.empty()
+        self.bullet_group.empty()
 
     def create_zombie(self):
         self.zombie_group.add(Zombie(self.platform_group, self.portal_group, self.round_number + 1, self.round_number + 5))
