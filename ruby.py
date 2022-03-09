@@ -1,3 +1,4 @@
+from secrets import choice
 import pygame
 from screen import Screen
 
@@ -25,7 +26,7 @@ class Ruby(pygame.sprite.Sprite):
         self.portal_sound = pygame.mixer.Sound('assets/sounds/portal_sound.wav')
 
         self.position = vector(self.rect.x, self.rect.y)
-        self.velocity = vector(-1*self.HORIZONTAL_VELOCITY, self.HORIZONTAL_VELOCITY)
+        self.velocity = vector(choice([-1, 1])*self.HORIZONTAL_VELOCITY, self.HORIZONTAL_VELOCITY)
         self.acceleration = vector(0, self.VERTICAL_ACCELERATION)
 
     def update(self): 
