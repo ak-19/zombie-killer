@@ -13,4 +13,6 @@ class Tile(pygame.sprite.Sprite):
         tile_group.add(self)
 
         self.rect.topleft = (x, y)
+
+        self.mask = pygame.mask.from_surface(self.image)        
         

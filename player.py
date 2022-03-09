@@ -68,6 +68,7 @@ class Player(pygame.sprite.Sprite):
         self.move()
         self.check_collission()
         self.check_animations()
+        self.mask = pygame.mask.from_surface(self.image)           
 
     def move(self):
         self.acceleration = vector(0, self.VERTICAL_ACCELERATION)
@@ -104,14 +105,14 @@ class Player(pygame.sprite.Sprite):
 
     def check_collission(self):
         if self.velocity.y > 0:
-            collided_platforms = pygame.sprite.spritecollide(self, self.platform_group, False)
+            collided_platforms = pygame.sprite.spritecollide(self, self.platform_group, False, pygame.sprite.collide_mask)
             if collided_platforms:
-                self.position.y = collided_platforms[0].rect.top + 1
+                self.position.y = collided_platforms[0].rect.top + 5
                 self.velocity.y = 0
             
 
         if self.velocity.y < 0:
-            collided_platforms = pygame.sprite.spritecollide(self, self.platform_group, False)
+            collided_platforms = pygame.sprite.spritecollide(self, self.platform_group, False, pygame.sprite.collide_mask)
             if collided_platforms:
                 self.velocity.y = 0
                 while pygame.sprite.spritecollide(self, self.platform_group, False):
