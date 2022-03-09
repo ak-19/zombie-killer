@@ -51,6 +51,12 @@ class Game:
         
         self.text = Text(display)
 
+        self.lost_ruby_sound = pygame.mixer.Sound('assets/sounds/lost_ruby.wav')
+        self.pickup_ruby_sound = pygame.mixer.Sound('assets/sounds/ruby_pickup.wav')
+
+        pygame.mixer.music.load('assets/sounds/level_music.wav')        
+        pygame.mixer.music.set_volume(.5)
+        pygame.mixer.music.play()
 
         self.setup_stats()
 
@@ -144,7 +150,17 @@ class Game:
                     self.player.position.x -= 256 * zombie.direction
                     self.player.rect.bottomleft = self.player.position
 
+        if pygame.sprite.spritecollide(self.player, self.rubie_group, True):
+            self.lost_ruby_sound.play()
+            self.player.health += 10
+            self.score += 100
+            self.player.health = min(self.player.STARTING_HEALTH, self.player.health)
 
+        for zombie in self.zombie_group:
+            if not zombie.is_dead:
+                if pygame.sprite.spritecollide(zombie, self.rubie_group, True):
+                    self.lost_ruby_sound.play()
+                    self.create_zombie()
 
     def check_round_completion(self): pass    
     def check_game_over(self): pass    
