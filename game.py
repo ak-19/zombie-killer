@@ -62,7 +62,7 @@ class Game:
 
     def setup_stats(self):
         self.STARTING_ROUND_TIME = 30
-        self.STARTING_ZOMBIE_CREATION_TIME = 5
+        self.STARTING_ZOMBIE_CREATION_TIME = 2
         self.score = 0
         self.round_number = 0
         self.round_time = self.STARTING_ROUND_TIME
