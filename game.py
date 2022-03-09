@@ -4,6 +4,7 @@ from background import Background
 from colors import Colors
 from player import Player
 from portal import Portal
+from ruby import Ruby
 from rubymaker import RubyMaker
 from screen import Screen
 from tile import Tile
@@ -92,6 +93,7 @@ class Game:
         self.player_group.draw(self.display)
         self.bullet_group.draw(self.display)
         self.zombie_group.draw(self.display)
+        self.rubie_group.draw(self.display)
         self.text.draw(self.score, self.round_number, self.round_time, self.player.health)
 
     def update(self): 
@@ -107,6 +109,7 @@ class Game:
         self.player_group.update()
         self.bullet_group.update()
         self.zombie_group.update()
+        self.rubie_group.update()
 
         self.add_zombies()
 
@@ -134,6 +137,7 @@ class Game:
                     zombie.kick_sound.play()
                     zombie.kill()
                     self.score += 25
+                    self.rubie_group.add(Ruby(self.platform_group, self.portal_group))
                 else:                    
                     self.player.health -= 20
                     self.player.hit_sound.play()
