@@ -56,7 +56,7 @@ class Game:
 
         pygame.mixer.music.load('assets/sounds/level_music.wav')        
         pygame.mixer.music.set_volume(.5)
-        pygame.mixer.music.play()
+        pygame.mixer.music.play(-1, 0.0)
 
         self.setup_stats()
 
@@ -70,6 +70,7 @@ class Game:
         self.zombie_createion_time = self.STARTING_ZOMBIE_CREATION_TIME
 
     def run_game_loop(self):
+        self.pause_game('Zombie killer',  "Press 'Enter' to start")        
         while self.run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): return
@@ -119,6 +120,8 @@ class Game:
 
         self.add_zombies()
 
+        self.check_round_completion()
+
     def add_zombies(self):
         if self.frame_count % 60 == 0:
             if self.round_time % self.zombie_createion_time == 0:
@@ -162,11 +165,49 @@ class Game:
                     self.lost_ruby_sound.play()
                     self.create_zombie()
 
-    def check_round_completion(self): pass    
-    def check_game_over(self): pass    
-    def start_new_round(self): pass    
+    def check_round_completion(self):
+        if self.round_time <= 0:
+            self.start_new_round()
 
-    def pause_game(self): pass    
+    def start_new_round(self):
+        self.round_number += 1
+
+        if self.round_number < self.STARTING_ZOMBIE_CREATION_TIME:
+            self.zombie_createion_time -= 1
+
+        self.frame_count = 0
+        self.round_time = self.STARTING_ROUND_TIME
+
+        self.zombie_group.empty()
+        self.bullet_group.empty()        
+        self.rubie_group.empty()
+        self.player.reset()
+
+        self.pause_game('You survived the night', "Press 'Enter' to continue")
+        
+    def pause_game(self, main_text, helper_text):
+        pygame.mixer.music.pause()
+        pause = True
+
+        while pause:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): 
+                    self.run  = pause = False
+                    return
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    pause = False
+
+            self.display.fill(Colors.BLACK)
+            self.text.pause_text(main_text, helper_text)
+            pygame.display.update()
+            self.clock.tick(60)
+
+        pygame.mixer.music.unpause()
+
+
+    def check_game_over(self): pass    
+
+
     def reset_game(self): pass    
 
     def create_zombie(self):

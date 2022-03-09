@@ -33,4 +33,15 @@ class Text:
         time_text = self.bottom_bar_font.render(f'Sunrise in: {round_time}', True, Colors.WHITE)
         time_text_rect = time_text.get_rect()
         time_text_rect.topright = (Screen.WIDTH - 10, Screen.HEIGHT - 25)
-        self.display.blit(time_text, time_text_rect)                                
+        self.display.blit(time_text, time_text_rect)  
+
+    def pause_text(self, main, helper):     
+        title_text = self.title_font.render(main, True, Colors.GREEN)
+        title_text_rect = title_text.get_rect()
+        title_text_rect.center = (Screen.WIDTH // 2, Screen.HEIGHT // 2)
+        self.display.blit(title_text, title_text_rect)    
+
+        helper_text = self.bottom_bar_font.render(helper, True, Colors.WHITE)
+        helper_text_rect = helper_text.get_rect()
+        helper_text_rect.center = (Screen.WIDTH // 2, Screen.HEIGHT // 2 + 30)
+        self.display.blit(helper_text, helper_text_rect)                               
